@@ -31,6 +31,17 @@ class DocumentRecord:
     classification: dict[str, Any] | None = None  # Holds Stage 2/3 LLM extraction
 
 
+@dataclass
+class JobRecord:
+    job_id: str
+    document_id: str
+    status: str = "running" # running, completed, failed
+    progress_events: list[str] = field(default_factory=list)
+    final_output: dict[str, Any] | None = None
+    error_message: str | None = None
+    start_time: datetime = field(default_factory=datetime.utcnow)
+
+
 # --------------------------------------------------------------------------- #
 #  Store Implementation                                                        #
 # --------------------------------------------------------------------------- #
@@ -79,3 +90,37 @@ class DocumentRegistry:
 
 # Global singleton instance
 registry = DocumentRegistry()
+
+
+class JobRegistry:
+    """Thread-safe store for LangGraph jobs."""
+    def __init__(self):
+        self._lock = threading.RLock()
+        self._store: dict[str, JobRecord] = {}
+        
+    def create_job(self, job_id: str, document_id: str) -> JobRecord:
+        with self._lock:
+            job = JobRecord(job_id=job_id, document_id=document_id)
+            self._store[job_id] = job
+            return job
+            
+    def get_job(self, job_id: str) -> JobRecord | None:
+        with self._lock:
+            return self._store.get(job_id)
+            
+    def update_job(self, job_id: str, status: str, final_output: dict | None = None, error: str | None = None):
+        with self._lock:
+            if job := self._store.get(job_id):
+                job.status = status
+                if final_output:
+                    job.final_output = final_output
+                if error:
+                    job.error_message = error
+
+    def append_event(self, job_id: str, event: str):
+        with self._lock:
+            if job := self._store.get(job_id):
+                job.progress_events.append(event)
+
+
+job_registry = JobRegistry()
