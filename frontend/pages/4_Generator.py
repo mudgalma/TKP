@@ -21,7 +21,7 @@ st.write(f"**Target Document:** `{document_id}`")
 if st.button("🚀 Start Generation", type="primary"):
     with st.spinner("Initializing AI Agents..."):
         try:
-            res = requests.post("http://localhost:8000/api/generate", json={"document_id": document_id})
+            res = requests.post(f"{BACKEND_URL}/api/generate", json={"document_id": document_id})
             res.raise_for_status()
             job_id = res.json()["data"]["job_id"]
             st.session_state.current_job_id = job_id
@@ -38,7 +38,7 @@ if "current_job_id" in st.session_state:
     status_placeholder = st.empty()
     
     if st.button("Refresh Status"):
-        res = requests.get(f"http://localhost:8000/api/jobs/{job_id}")
+        res = requests.get(f"{BACKEND_URL}/api/jobs/{job_id}")
         if res.status_code == 200:
             job = res.json()["data"]
             st.write(f"**Status:** {job['status']}")

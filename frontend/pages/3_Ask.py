@@ -12,7 +12,7 @@ st.write("Select a document and ask a question based on its content.")
 # 1. Fetch available documents
 docs = []
 try:
-    response = requests.get("http://localhost:8000/api/documents")
+    response = requests.get(f"{BACKEND_URL}/api/documents")
     if response.status_code == 200:
         docs = [d for d in response.json().get("data", []) if d["status"] == "ready"]
 except requests.exceptions.ConnectionError:
@@ -48,7 +48,7 @@ if st.button("Ask", type="primary"):
         with st.spinner("Retrieving and generating answer..."):
             try:
                 res = requests.post(
-                    "http://localhost:8000/api/query",
+                    f"{BACKEND_URL}/api/query",
                     json={"document_id": selected_id, "question": question}
                 )
                 if res.status_code == 200:
