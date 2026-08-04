@@ -33,12 +33,12 @@ class Config:
 
     # ── OpenRouter / LLM ────────────────────────────────────────────────────
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    llm_model: str = "meta-llama/llama-3.1-8b-instruct"
+    llm_model: str = field(default_factory=lambda: os.environ.get("LLM_MODEL", "meta-llama/llama-3.1-8b-instruct"))
     llm_timeout_seconds: int = 60
     llm_max_retries: int = 3
 
     # ── Embeddings ──────────────────────────────────────────────────────────
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    embedding_model: str = field(default_factory=lambda: os.environ.get("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5"))
     embedding_batch_size: int = 32
 
     # ── ChromaDB ────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ class Config:
     max_question_length: int = 1000
 
     # ── Reranker ────────────────────────────────────────────────────────────
-    reranker_model: str = "BAAI/bge-reranker-base"
+    reranker_model: str = field(default_factory=lambda: os.environ.get("RERANKER_MODEL", "BAAI/bge-reranker-base"))
 
 
 # Single global instance — import this everywhere

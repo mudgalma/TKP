@@ -1,6 +1,9 @@
+import os
 import time
 import requests
 import streamlit as st
+
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="Upload Documents", page_icon="📤")
 
@@ -47,7 +50,7 @@ if uploaded_file:
         
         try:
             with st.spinner("Starting upload..."):
-                response = requests.post("http://localhost:8000/api/upload", files=files, data=data)
+                response = requests.post(f"{BACKEND_URL}/api/upload", files=files, data=data)
             
             if response.status_code == 200:
                 res = response.json()
@@ -60,7 +63,7 @@ if uploaded_file:
                 # Poll for completion
                 max_retries = 300 # 5 mins
                 for _ in range(max_retries):
-                    poll_res = requests.get(f"http://localhost:8000/api/documents/{doc_id}")
+                    poll_res = requests.get(f"{BACKEND_URL}/api/documents/{doc_id}")
                     if poll_res.status_code == 200:
                         doc = poll_res.json()["data"]
                         status = doc["status"]
@@ -94,4 +97,4 @@ if uploaded_file:
             else:
                 st.error(f"Upload failed: {response.text}")
         except requests.exceptions.ConnectionError:
-            st.error("Could not connect to backend. Is FastAPI running on port 8000?")
+            st.error(f"Could not connect to backend. Is it running at {BACKEND_URL}?")
