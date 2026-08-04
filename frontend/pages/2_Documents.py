@@ -1,5 +1,8 @@
+import os
 import requests
 import streamlit as st
+
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="My Documents", page_icon="📁", layout="wide")
 
@@ -7,7 +10,7 @@ st.title("📁 My Documents")
 st.write("View uploaded documents and their extracted metadata.")
 
 try:
-    response = requests.get("http://localhost:8000/api/documents")
+    response = requests.get(f"{BACKEND_URL}/api/documents")
     if response.status_code == 200:
         docs = response.json().get("data", [])
         

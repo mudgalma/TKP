@@ -1,7 +1,10 @@
 import requests
+import os
 import streamlit as st
 
-st.set_page_config(page_title="Ask Questions", page_icon="💬", layout="wide")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+
+st.set_page_config(page_title="Ask Documents", page_icon="💬", layout="wide")
 
 st.title("💬 Ask Questions")
 st.write("Select a document and ask a question based on its content.")

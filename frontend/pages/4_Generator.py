@@ -1,6 +1,9 @@
+import os
 import requests
 import json
 import streamlit as st
+
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="TKP Generator", page_icon="⚙️", layout="wide")
 
