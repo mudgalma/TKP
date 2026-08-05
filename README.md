@@ -168,6 +168,16 @@ Planned/Deferred:
 
 ---
 
+## Governance & observability (short status)
+- Prompt Evaluation — Partial: structured, auditable prompts and schema-driven outputs are in code (app/rag/generate.py, app/ingestion/classifier.py), but there is no automated prompt-eval harness.
+- LLM Evaluation — Partial: per-call tokens and model metadata are captured and returned by the API (app/rag/generate.py, app/__init__.py); no aggregated evaluation/dashboard exists yet.
+- Cost Tracking — Not implemented: token counts are available per call but there is no persistent aggregation or cost-rolling logic.
+- AI Observability — Partial: structured logging and document/job lifecycle tracking are present (app/document_registry.py, .agents/rules/rule-for-tkp.md), but no Prometheus/OpenTelemetry or centralized log sink.
+
+(For details and pointers, see the referenced files above.)
+
+---
+
 ## Contributing
 Contributions are welcome. Recommended steps:
 1. Open an issue describing the bug or feature request.
