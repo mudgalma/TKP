@@ -6,6 +6,7 @@ The Teacher Knowledge Package (TKP) Generator is an end-to-end AI platform that 
 - Dual-retrieval RAG engine (semantic vectors + BM25) with cross-encoder reranking to ensure relevant, grounded context.
 - Automated LLM-based classifier to extract pedagogical metadata (subject, grade level, objectives) while ingesting documents.
 - Asynchronous FastAPI backend plus a Streamlit frontend for upload, metadata inspection, and chat-style querying with verifiable citations.
+- Live demo / Deployment: https://teacher-knowledge-pack.streamlit.app/
 
 ---
 
