@@ -168,7 +168,7 @@ Planned/Deferred:
 
 ---
 
-## Governance & observability (short status)
+## Governance & observability 
 - Prompt Evaluation — Partial: structured, auditable prompts and schema-driven outputs are in code (app/rag/generate.py, app/ingestion/classifier.py), but there is no automated prompt-eval harness.
 - LLM Evaluation — Partial: per-call tokens and model metadata are captured and returned by the API (app/rag/generate.py, app/__init__.py); no aggregated evaluation/dashboard exists yet.
 - Cost Tracking — Not implemented: token counts are available per call but there is no persistent aggregation or cost-rolling logic.
