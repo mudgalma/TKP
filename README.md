@@ -23,17 +23,13 @@ The **Teacher Knowledge Package (TKP) Generator** is an enterprise-grade AI plat
 
 To verify the quality and safety of the RAG generation before deployment, we built a custom evaluation suite (**`scripts/run_tkp_eval.py`**) that runs our pipeline against a **Golden Dataset** and logs metrics directly to the local MLflow server.
 
-### 1. Traces & Latency Monitoring
-We track the latency, token usage, and system errors for every generated lesson plan.
-![MLflow Traces Dashboard](assets/images/mlflow_traces.png)
+### 1. Latency & Performance Monitoring
+We track the performance, token usage, and system latency for every generated lesson plan.
+![MLflow Performance Dashboard](assets/images/mlflow_overview.png)
 
-### 2. Trace Explorer
-Developers can inspect the exact input query, retrieved text blocks, and LLM-generated JSON packages side-by-side.
-![MLflow Trace Explorer](assets/images/mlflow_overview.png)
-
-### 3. Quality Metrics & LLM-as-a-Judge
-We run custom scorers (`has_valid_schema`, `has_populated_scripts`, and `handles_adversarial_correctly`) along with MLflow's GPT-4 powered **`pedagogically_sound`** judge to score the output quality.
-![MLflow Quality Scores](assets/images/mlflow_quality.png)
+### 2. Trace Explorer & Quality Metrics
+Developers can inspect the exact input query, retrieved text blocks, LLM-generated JSON packages, and the automated LLM-as-a-judge scores side-by-side.
+![MLflow Trace Explorer](assets/images/mlflow_traces.png)
 
 ---
 
