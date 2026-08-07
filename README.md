@@ -1,44 +1,108 @@
 # TKP — Teacher Knowledge Package (TKP)
 
-A modular Python toolkit for building retrieval-augmented generation (RAG) pipelines for educational content: document ingestion & chunking, hybrid indexing (BM25 + vector), reranking, and grounded generation orchestration. TKP is intended for researchers and engineers building QA, summarization, tutoring, or lesson-generation pipelines that require explicit ingestion → retrieval → generation components.
+A modular Python toolkit for building retrieval-augmented generation (RAG) pipelines tailored to educational content: document ingestion & chunking, hybrid indexing (BM25 + vector), reranking, and grounded LLM generation with citations.
 
 Badges
 - Python 3.9+
-- Core libs: FastAPI, Streamlit (for demos), ChromaDB (vector store)
+- Core libs: FastAPI, Streamlit (demo), ChromaDB (vector store)
 
 Quick highlights
-- Robust document parsing for PDFs, PPTX, DOCX, and text with routing for scanned vs text docs.
+- Document parsing for PDFs, PPTX, DOCX, and text with routing for scanned vs text documents.
 - Hybrid retrieval: BM25 + vector embeddings, with reranking before LLM generation.
-- Grounded, citation-aware generation using OpenRouter/OpenAI-compatible client.
-- Generation orchestration: graph + node/state pattern for multi-step generation flows.
-- Simple demo/frontend and an experiment harness for local testing.
+- Grounded, citation-aware generation using an OpenRouter/OpenAI-compatible client.
+- Generation orchestration via a graph + node/state pattern for multi-step generation flows.
+- Local demo UI and an MLflow-backed evaluation harness for automated scoring.
 
-Table of contents
+---
+
+## Table of contents
 - What this is
-- Project layout
 - Quick start
-- Configuration (exact env vars)
-- Examples (parsing & generation)
+- MLflow evaluation (how it works)
+- Project layout
+- How to run the demo & evaluation
+- Configuration
 - Development notes
-- Known discrepancies & optional integrations
 - Contributing
 
-What this is
-TKP is a developer-friendly toolkit to convert documents into retrieval-ready chunks, index them with both sparse and dense methods, and run generation workflows that combine retrieved context with LLMs while enforcing strict context isolation and citation requirements.
+## What this is
+TKP helps convert curriculum documents into retrieval-ready chunks, index them with sparse and dense methods, and run generation workflows that produce teacher-facing lesson plans and supporting materials. It's aimed at researchers and engineers building RAG pipelines for educational content, and includes an evaluation harness that logs runs to MLflow.
 
-Stack
-- Language: Python (primary)
-- Runtime / frameworks: FastAPI (backend), Streamlit (demo), uvicorn (ASGI server)
-- Notable libraries (observed in pyproject.toml):
-  - chromadb (vector store persistence)
-  - openai (OpenRouter-compatible client usage)
-  - pymupdf, python-pptx, python-docx (parsing)
-  - langchain-core, langchain-text-splitters (text splitting utilities)
-  - rank-bm25 (sparse retrieval baseline)
-  - sentence-transformers (embedding / reranker clients)
-  - tenacity (retries)
+## Quick start (short path)
+1. Clone and create a venv
+```bash
+git clone https://github.com/mudgalma/TKP.git
+cd TKP
+python -m venv .venv
+source .venv/bin/activate    # Windows: .venv\Scripts\activate
+```
 
-Project layout (top-level)
+2. Install the project
+```bash
+pip install -e .
+```
+
+3. Configure
+```bash
+cp .env.example .env
+# Edit .env and populate keys (OPENROUTER_API_KEY is required)
+```
+
+4. Run the smoke test
+```bash
+python test_phase1.py
+```
+
+5. Run the demo UI (optional)
+- FastAPI backend (if available):
+```bash
+uvicorn app:app --reload --port 8000
+```
+- Streamlit demo:
+```bash
+streamlit run frontend/main.py
+```
+
+---
+
+## MLflow evaluation — how it works
+TKP includes an evaluation harness (scripts/run_tkp_eval.py) that:
+
+1. Loads ground-truth JSON scenarios from `ground_truth/` and matches them to source PDFs in `docs/`.
+2. Runs an end-to-end pipeline for each scenario (parse → chunk → embed → index → generate) via a `run_pipeline` wrapper.
+3. Uses a set of deterministic scorers (Python functions decorated with `@mlflow.genai.scorer`) plus an LLM-as-a-judge Guidelines scorer to evaluate outputs.
+4. Calls `mlflow.genai.evaluate(...)` to run and log the evaluation. Each run is recorded by MLflow with metrics, tags, and artifacts (the generated package and any diagnostics).
+
+Key implementation points
+- The evaluation script dynamically builds a dataset from `ground_truth/*.json` and will add adversarial test cases (irrelevant queries, tampered documents) when applicable.
+- Scorers implemented in `scripts/run_tkp_eval.py` include checks for schema validity, populated teacher scripts, correct handling of adversarial queries, and detection of tampered facts.
+- The predict function (`run_pipeline`) executes the same ingestion, retrieval, and generation pipeline used in production and returns a serializable dict (or Pydantic model dump) that MLflow logs.
+
+How to run an evaluation and view results
+1. Start the MLflow UI (from the repo root):
+```bash
+# Starts a local MLflow UI serving the default ./mlruns directory
+mlflow ui --backend-store-uri ./mlruns --port 5000
+```
+2. In another terminal, run the evaluation script:
+```bash
+python scripts/run_tkp_eval.py
+```
+3. Open the UI at http://127.0.0.1:5000 to inspect experiments, runs, traces, and metrics.
+
+You should see experiment dashboards like the screenshots below (place the images in `assets/` with the filenames shown to render them here):
+
+![MLflow Overview](assets/mlflow-overview.png)
+
+![MLflow Evaluation runs](assets/mlflow-eval-runs.png)
+
+Notes
+- The repository's evaluation code uses `mlflow.genai` helpers (Guidelines scorer and `mlflow.genai.evaluate`) to simplify LLM evaluation workflows.
+- The script prints a convenience message with how to start the MLflow server. If you prefer a different backend store (S3 / remote DB), point `--backend-store-uri` to that location.
+
+---
+
+## Project layout (top-level)
 ```
 app/                    # main package: config, parsing, ingestion, rag, generation, schemas
   __init__.py
@@ -51,129 +115,44 @@ app/                    # main package: config, parsing, ingestion, rag, generat
   schemas/              # Pydantic schemas for domain models / metadata
 frontend/
   main.py               # demo / UI entry point (Streamlit or ASGI)
-ground_truth/           # datasets / ground truth JSONs for evaluation
-src/tkp/                # package marker / small namespace
-scripts/                # developer utilities
+ground_truth/           # evaluation scenarios (JSON) used by the MLflow harness
+scripts/                # developer utilities (including scripts/run_tkp_eval.py)
 test_phase1.py          # experiment / smoke test runner
 pyproject.toml          # project metadata & declared dependencies
 .env.example            # example env variables
 initial_tkp.pdf         # project design brief / notes
-uv.lock                 # lockfile for local toolchain
 ```
 
 How it fits together
-- Documents are parsed and normalized in app/ingestion/ (see parser.py, chunker.py). PDF routing chooses PyMuPDF (fitz) for text-heavy docs and llama-parse for scanned/tables/equations.
-- Chunks are indexed via app/rag/ (bm25_index.py and vector_store.py). Embeddings and reranking are pluggable via settings in app/config.py.
-- app/generation/ (graph.py, nodes.py, state.py) implements orchestration for multi-step generation; app/rag/generate.py constructs a context-bounded prompt and calls the LLM via an OpenAI-compatible OpenRouter client. Generation strictly enforces context-only answers and citation requirements.
+- Parsing & chunking: `app/ingestion` normalizes documents into blocks and splits them into retrieval-sized chunks.
+- Indexing & retrieval: `app/rag` contains BM25 (sparse) and vector (dense) paths, plus reranking logic.
+- Generation: `app/generation` implements a graph-based orchestration for multi-step generation and produces a Teacher Knowledge Package (TKP) Pydantic model.
+- Evaluation: `scripts/run_tkp_eval.py` wraps the pipeline and submits runs to MLflow; scorers live alongside this script.
 
-Quick start — run locally
-1. Clone and create a venv
-```bash
-git clone https://github.com/mudgalma/TKP.git
-cd TKP
-python -m venv .venv
-source .venv/bin/activate    # Windows: .venv\Scripts\activate
-```
+---
 
-2. Install the project (editable mode recommended)
-```bash
-pip install -e .
-```
+## Configuration
+See `app/config.py` for exact env names and defaults. Important env vars:
+- OPENROUTER_API_KEY (required)
+- LLAMA_CLOUD_API_KEY (optional)
+- EMBEDDING_MODEL, RERANKER_MODEL
+- CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME
 
-3. Configure environment
-```bash
-cp .env.example .env
-# Edit .env and populate keys and paths described below
-```
+---
 
-4. Run a quick experiment
-```bash
-python test_phase1.py
-```
-This script provides an end-to-end smoke test of ingestion → retrieval → generation using included sample data.
+## Development notes
+- The repo currently lacks unit tests beyond `test_phase1.py`. Add `tests/` and a CI workflow for PRs.
+- `pyproject.toml` lists the main runtime dependencies. MLflow and cohere are optional integrations — the evaluation script references `mlflow` and `mlflow.genai`. If you plan to run evaluations, ensure `mlflow` (and `mlflow-genai` if needed) are installed in your environment.
 
-5. Run the backend and frontend (if you want the demo)
-- FastAPI backend (if an `app` FastAPI object exists in code):
-```bash
-uvicorn app:app --reload --port 8000
-```
-- Streamlit demo (frontend):
-```bash
-streamlit run frontend/main.py
-```
-If an ASGI app exists in frontend/main.py, run:
-```bash
-uvicorn frontend.main:app --reload --port 8501
-```
+## Contributing
+- Fork → branch (feat/ or fix/) → tests & docs → PR
+- Keep changes small and include unit/integration tests where appropriate.
 
-Configuration — exact env vars (from app/config.py)
-- OPENROUTER_API_KEY (required) — used by app/rag/generate.py to call OpenRouter-compatible APIs
-- LLAMA_CLOUD_API_KEY (optional) — used by llama-parse path for scanned/tables PDFs
-- EMBEDDING_MODEL (optional) — default set in app/config.py (embedding model key)
-- RERANKER_MODEL (optional) — reranker model key
-- CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME — paths and collection names for ChromaDB persistence
+---
 
-Check app/config.py for full names and defaults. The module raises a clear error at startup if required env vars (like OPENROUTER_API_KEY) are missing.
+If you'd like, I can now:
+1. Add the two MLflow screenshots to `assets/` (you can upload them or I can add them if you provide the image files or base64).
+2. Create a PR replacing `README.md` with this version (done in this commit).
+3. Add a minimal GitHub Actions workflow to run `python -m pytest` or `python test_phase1.py` on pushes/PRs.
 
-Examples
-
-1) Parse a PDF (Python)
-```python
-import asyncio
-from app.ingestion.parser import parse_file
-
-# content: bytes from reading a PDF file, content_type like "application/pdf"
-# This is an async API; use asyncio.run in scripts.
-blocks, is_markdown = asyncio.run(parse_file("book.pdf", "application/pdf", pdf_bytes))
-# blocks -> list of (page_number, text) tuples
-```
-
-2) Generate a grounded answer (Python)
-- The public API is generate_answer(question, ranked_chunks) in app/rag/generate.py.
-- ranked_chunks are produced by retrieval + reranker (see app/rag/reranker.py and retriever.py).
-```python
-from app.rag.generate import generate_answer
-
-# ranked_chunks: list of RankedChunk (see app/rag/reranker.py)
-result = generate_answer("What is X?", ranked_chunks)
-print(result.answer)
-for c in result.citations:
-    print(c.page_citation, c.section_title)
-```
-
-3) Quick CLI-style rebuild (conceptual)
-```bash
-# Example placeholders — inspect app/rag/vector_store.py for exact functions
-python -c "from app.rag import vector_store; vector_store.build_index('docs/')"
-```
-
-Development notes & maintainer guidance
-- Ingestion:
-  - `app/ingestion/parser.py` routes between PyMuPDF and llama-parse. Adjust chunk sizes and chunk_overlap in `app/config.py`.
-- Retrieval:
-  - `app/rag/bm25_index.py` provides a text-based baseline.
-  - `app/rag/vector_store.py` and `app/rag/embed.py` are embedding + vector index hooks (plug your provider).
-- Generation:
-  - `app/rag/generate.py` uses an explicit system prompt and enforces strict rules (answers must come from <context> and every factual claim must have a citation). It retries only on connection/timeouts and raises GenerationError for client 4xx LLM errors.
-- Schemas:
-  - `app/schemas/` contains Pydantic models for consistent metadata.
-
-Known discrepancies & optional integrations
-- The prior README mentions Cohere and MLflow prominently. The current pyproject.toml does not include `cohere` or `mlflow` in dependencies. If you rely on Cohere embeddings or MLflow evaluation, add them to pyproject.toml and document expected env vars.
-- The generation path uses an OpenRouter-compatible client (openai package configured with base_url). By default app/config.py points to OpenRouter; you can swap providers by changing settings and/or the client logic.
-
-Testing & CI
-- There is no tests/ folder beyond the sample `test_phase1.py`. Use `test_phase1.py` as an integration template and add unit tests under tests/ plus a basic GitHub Actions workflow to run linters and test_phase1.py for PRs.
-
-Contributing
-- Recommended flow:
-  - Fork → branch (feat/ or fix/) → tests & docs → PR
-- Keep changes small and include unit/integration tests for new functionality.
-
-Need help?
-- I can:
-  1. Create a PR replacing README.md with this refined version.
-  2. Extract exact function signatures & usage examples from app/rag/* and app/ingestion/* to add runnable snippets.
-  3. Add a minimal GitHub Actions workflow that runs `python -m pytest` or `python test_phase1.py`.
-
-Which of those would you like me to do next?
+Tell me which of those to do next, or I'll proceed to add the screenshots if you upload them.
