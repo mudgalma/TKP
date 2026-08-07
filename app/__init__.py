@@ -75,6 +75,15 @@ async def run_ingestion_pipeline(
         registry.update_status(document_id, "parsing")
         page_blocks, is_markdown = await parse_file(filename, content_type, content, hint=hint)
         
+        # Save raw parsed text to a local file for the Step 3 Manual Check
+        import os
+        os.makedirs("debug", exist_ok=True)
+        debug_path = f"debug/{filename}_parsed.md"
+        with open(debug_path, "w", encoding="utf-8") as f:
+            for page_num, text in page_blocks:
+                f.write(f"\n\n--- PAGE {page_num} ---\n\n{text}")
+        logger.info("Saved debug parsed text to: %s", debug_path)
+        
         # 2. Chunk
         registry.update_status(document_id, "chunking")
         chunks = chunk_document(page_blocks, document_id, is_markdown=is_markdown)

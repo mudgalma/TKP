@@ -1,0 +1,160 @@
+{
+  "document": "Chapter_Probability_maths.pdf",
+  "chapter_title": "Probability (Chapter 14)",
+  "grade": 10,
+  "subject": "Mathematics (STEM)",
+  "ground_truth_status": "LLM-drafted from source PDF, pending human verification",
+
+  "expected_concepts": [
+    "Theoretical (classical) probability: P(E) = (Number of outcomes favourable to E) / (Number of all possible outcomes)",
+    "Assumption of equally likely outcomes underlies the theoretical probability definition",
+    "Elementary event (an event with only one outcome)",
+    "The sum of the probabilities of all elementary events of an experiment is 1",
+    "Complementary events: P(E) + P(not E) = 1, i.e. P(E-bar) = 1 - P(E)",
+    "Probability of a sure/certain event is 1; probability of an impossible event is 0",
+    "Range of probability: 0 <= P(E) <= 1",
+    "Experimental/empirical probability (based on actual trials) vs theoretical probability (based on assumptions) — they converge as number of trials increases",
+    "Geometric probability: for continuous outcomes (points on a line, area in a region), probability = favourable measure (length/area) / total measure",
+    "Historical origin: theoretical probability definition given by Pierre Simon Laplace in 1795; probability theory originated in the 16th century with J. Cardan"
+  ],
+
+  "expected_objectives": [
+    "Define theoretical (classical) probability and distinguish it from experimental probability",
+    "Compute the probability of an event using the favourable-outcomes-over-total-outcomes formula, assuming equally likely outcomes",
+    "Apply the concept of complementary events (P(E) + P(not E) = 1) to solve problems",
+    "Recognise and compute probability for sure events, impossible events, and events within the valid range [0, 1]",
+    "Extend the discrete probability formula to continuous/geometric contexts using length or area ratios"
+  ],
+
+  "known_answer_locations": [
+    {
+      "question": "What is the formula for theoretical probability, and who first defined it?",
+      "expected_page": 203,
+      "expected_section": "14.1 Probability — A Theoretical Approach"
+    },
+    {
+      "question": "What is a complementary event and what is the formula relating P(E) and P(not E)?",
+      "expected_page": 206,
+      "expected_section": "Remarks (following Example 3), definition of complement"
+    },
+    {
+      "question": "What is the probability of an impossible event and a sure event?",
+      "expected_page": 207,
+      "expected_section": "Impossible event / sure event (following the 'getting 8 on a die' discussion)"
+    },
+    {
+      "question": "How is probability computed for continuous outcomes, such as a helicopter crashing in a region?",
+      "expected_page": 211,
+      "expected_section": "Example 11 (geometric probability using area)"
+    }
+  ],
+
+  "candidate_facts_for_tampering": [
+    "Pierre Simon Laplace defined theoretical probability in 1795 (p. 203) — could change the year or misattribute to a different mathematician (e.g. Cardan, Bernoulli, de Moivre, all mentioned on p. 204)",
+    "P(getting a head) = 1/2 and P(getting a tail) = 1/2 for a single fair coin toss (p. 204) — could flip to unequal fractions",
+    "P(drawing an ace from a 52-card deck) = 4/52 = 1/13 (p. 207) — could change the numerator (number of aces) or denominator",
+    "P(two friends having the same birthday) = 1/365 (p. 208, Example 6) — could change the fraction or invert with the 'different birthday' answer (364/365)",
+    "The sum of the probabilities of all elementary events of an experiment is exactly 1 (p. 205 Remarks, and 14.2 Summary point 5) — could change to 'less than 1' or 'depends on the experiment'"
+  ],
+
+  "equation_verification_set": [
+    {
+      "example": "Example 1",
+      "context": "Tossing a single fair coin once",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(head) = 1/2, P(tail) = 1/2",
+      "source_page": 204
+    },
+    {
+      "example": "Example 2",
+      "context": "Drawing 1 of 3 differently-coloured balls (red, blue, yellow) from a bag",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(yellow) = 1/3, P(red) = 1/3, P(blue) = 1/3",
+      "source_page": 204
+    },
+    {
+      "example": "Example 3",
+      "context": "Throwing a fair die once",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(number > 4) = 2/6 = 1/3; P(number <= 4) = 4/6 = 2/3",
+      "source_page": 205
+    },
+    {
+      "example": "Example 4",
+      "context": "Drawing one card from a well-shuffled 52-card deck",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(ace) = 4/52 = 1/13; P(not ace) = 48/52 = 12/13",
+      "source_page": 207
+    },
+    {
+      "example": "Example 5",
+      "context": "Tennis match, P(Sangeeta wins) = 0.62 given",
+      "formula_used": "P(E) + P(not E) = 1  =>  P(complementary event) = 1 - P(E)",
+      "correct_answer": "P(Reshma wins) = 1 - 0.62 = 0.38",
+      "source_page": 208
+    },
+    {
+      "example": "Example 6",
+      "context": "Two friends' birthdays (365-day year, ignoring leap year)",
+      "formula_used": "P(different) = 364/365; P(same) = 1 - P(different)",
+      "correct_answer": "P(different birthdays) = 364/365; P(same birthday) = 1/365",
+      "source_page": 208
+    },
+    {
+      "example": "Example 7",
+      "context": "40 students (25 girls, 15 boys), one name card drawn at random",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(girl) = 25/40 = 5/8; P(boy) = 15/40 = 3/8",
+      "source_page": 209
+    },
+    {
+      "example": "Example 8",
+      "context": "Box with 3 blue, 2 white, 4 red marbles (9 total), one drawn at random",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(white) = 2/9; P(blue) = 3/9 = 1/3; P(red) = 4/9",
+      "source_page": 209
+    },
+    {
+      "example": "Example 9",
+      "context": "Two coins tossed simultaneously, event = at least one head",
+      "formula_used": "P(E) = favourable outcomes / total outcomes, total outcomes = 4",
+      "correct_answer": "P(at least one head) = 3/4",
+      "source_page": 210
+    },
+    {
+      "example": "Example 10",
+      "context": "Music stops randomly within 2 minutes; probability it stops within first half-minute",
+      "formula_used": "Geometric probability: P(E) = favourable distance / total distance",
+      "correct_answer": "P(stops within first half-minute) = (1/2) / 2 = 1/4",
+      "source_page": 210
+    },
+    {
+      "example": "Example 11",
+      "context": "Helicopter crash location, rectangular region 4.5km x 9km, lake area 2.5km x 3km",
+      "formula_used": "Geometric probability: P(E) = favourable area / total area",
+      "correct_answer": "Total area = 40.5 km^2; Lake area = 7.5 km^2; P(crashed in lake) = 7.5/40.5 = 5/27",
+      "source_page": 211
+    },
+    {
+      "example": "Example 12",
+      "context": "Carton of 100 shirts: 88 good, 8 minor defects, 4 major defects",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(acceptable to Jimmy, i.e. good only) = 88/100 = 0.88; P(acceptable to Sujatha, i.e. good + minor defects) = 96/100 = 0.96",
+      "source_page": 212
+    },
+    {
+      "example": "Example 13",
+      "context": "Two dice (blue and grey) thrown together, 36 total equally likely outcomes",
+      "formula_used": "P(E) = favourable outcomes / total outcomes",
+      "correct_answer": "P(sum = 8) = 5/36; P(sum = 13) = 0/36 = 0 (impossible event); P(sum <= 12) = 36/36 = 1 (sure event)",
+      "source_page": 213
+    }
+  ],
+
+  "notes_for_human_verification": [
+    "This chapter is Class 10 (X) NCERT Mathematics per the text's own reference to 'In Class IX, we defined the experimental or empirical probability' (p. 203) — confirm the grade level matches your intended test set, since your other chapters so far have been Class 9.",
+    "The equation_verification_set is designed for EXACT/deterministic scoring (fraction or decimal match), not semantic/LLM-judged scoring like expected_concepts — use it to test whether your system's generated numeric answers match the source exactly, which is a stronger and cheaper check than an LLM judge for STEM content.",
+    "Examples 10, 11, and 20 in the exercises are explicitly marked 'Not from the examination point of view' in the source (footnote, p. 210-216) — decide whether to include geometric probability in your core expected_concepts or treat it as enrichment, similar to the supplementary-content decisions made for the other chapters.",
+    "Exercise 14.1 (pages 214-217) contains 25 unworked practice problems, not worked examples with stated answers — not included in equation_verification_set since the source text doesn't provide the answer key; only the 13 in-chapter worked Examples are included."
+  ]
+}

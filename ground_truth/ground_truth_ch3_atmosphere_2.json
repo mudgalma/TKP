@@ -1,0 +1,82 @@
+{
+  "document": "sst_class_9_chapter_10.pdf",
+  "chapter_title": "Atmosphere and Climate (Chapter 3, per source PDF's own printed labelling)",
+  "grade": 9,
+  "subject": "Geography (Social Science)",
+  "ground_truth_status": "Human-verified via second-LLM audit against source PDF text and page footers",
+
+  "expected_concepts": [
+    "Definition of the atmosphere (blanket of air surrounding Earth, held by gravity, mixture of gases)",
+    "Composition of the atmosphere (Nitrogen 78%, Oxygen 21%, Argon, CO2, water vapour, dust)",
+    "Five layers of the atmosphere: Troposphere, Stratosphere, Mesosphere, Thermosphere, Exosphere",
+    "Functions/features specific to each layer: weather phenomena occur in the troposphere; ozone/UV filtering in the stratosphere; meteors burn up in the mesosphere; radio wave reflection and auroras occur in the thermosphere",
+    "Ozone layer (in the stratosphere) filters harmful UV radiation",
+    "Weather vs Climate (day-to-day conditions vs long-term average, ~30 years)",
+    "Elements of weather/climate: temperature, humidity, precipitation, wind, atmospheric pressure",
+    "Insolation and its decrease from equator to poles",
+    "Atmospheric pressure: high-pressure vs low-pressure areas, wind flows high to low pressure",
+    "Land breeze and sea breeze (local winds)",
+    "India's climate classified as tropical monsoon",
+    "Four seasons in India per IMD: Winter, Summer/pre-monsoon, Monsoon/rainy, Post-monsoon",
+    "Monsoon mechanism: south-west monsoon (June-Sept, sea-to-land, brings most of India's rainfall) and north-east monsoon (Oct-Feb, land-to-sea, generally dry except picks up moisture over Bay of Bengal bringing rainfall to Tamil Nadu, Andhra Pradesh, and parts of Karnataka)",
+    "Climate change: greenhouse gases, causes, and effects (floods, droughts, melting glaciers, sea level rise)",
+    "Carbon footprint and ways to reduce it"
+  ],
+
+  "expected_objectives": [
+    "Describe the composition and structure of the atmosphere",
+    "Explain how the different layers of the atmosphere affect the Earth",
+    "Explain the mechanism of monsoon in India",
+    "Distinguish between weather and climate",
+    "Identify the four main seasons of India per the IMD (Winter, Summer/pre-monsoon, Monsoon, Post-monsoon) as the core, testable classification — the traditional six-season Indian calendar (Ritu) is supplementary enrichment content, not equivalent core material",
+    "Explain how human activities contribute to climate change and how carbon footprint can be reduced"
+  ],
+
+  "known_answer_locations": [
+    {
+      "question": "What is the composition of the atmosphere?",
+      "expected_page": 40,
+      "expected_section": "Composition of the Atmosphere"
+    },
+    {
+      "question": "What is monsoon and what causes it?",
+      "expected_page": 49,
+      "expected_section": "Monsoon"
+    },
+    {
+      "question": "What is the difference between weather and climate?",
+      "expected_page": 43,
+      "expected_section": "Weather and Climate"
+    },
+    {
+      "question": "Which layer of the atmosphere contains the ozone layer and why is it important for flying aeroplanes?",
+      "expected_page": 42,
+      "expected_section": "Stratosphere"
+    }
+  ],
+
+  "candidate_facts_for_tampering": [
+    "Nitrogen makes up 78% of the atmosphere (could flip to a wrong %, e.g. 'Oxygen makes up 78%')",
+    "The troposphere has an average height of about 12 kilometres (could change the number)",
+    "The south-west monsoon occurs June-September; north-east monsoon October-February (could swap the seasons)",
+    "Temperature decreases with altitude in the troposphere and mesosphere, but INCREASES in the thermosphere (a good 'inversion' fact to tamper — flip increases/decreases)"
+  ],
+
+  "case_study_content_not_core_concepts": [
+    {
+      "topic": "Carbon Footprint self-assessment activity",
+      "pages": "53-54",
+      "note": "Kept AS a core expected_concept (see list above) since it is one of the chapter's own 'Big Questions' and appears in the 'Before we move on' chapter summary — not purely supplementary."
+    },
+    {
+      "topic": "Punjab Floods 2025 case study",
+      "pages": "54-56",
+      "note": "Treated as separately extractable case-study/application content, NOT included in expected_concepts — it illustrates the monsoon/climate-change concepts rather than introducing a new core concept. If your system extracts this as a real-world application example, that's a bonus, not a requirement."
+    }
+  ],
+
+  "notes_for_human_verification": [
+    "Confirm the 5-layer order (Troposphere -> Stratosphere -> Mesosphere -> Thermosphere -> Exosphere) matches what you expect to be tested.",
+    "Traditional 6-season Indian calendar (Ritu, page 48) is supplementary enrichment, not a core concept — reflected in the revised expected_objectives above."
+  ]
+}

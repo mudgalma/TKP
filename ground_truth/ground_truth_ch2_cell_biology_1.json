@@ -1,0 +1,85 @@
+{
+  "document": "bio_chapter_9_class_9.pdf",
+  "chapter_title": "Cell: The Building Block of Life",
+  "grade": 9,
+  "subject": "Biology (Science)",
+  "ground_truth_status": "Human-verified via second-LLM audit (Gemini) against source PDF text and page footers",
+
+  "expected_concepts": [
+    "Cell as the basic structural and functional unit of life",
+    "Limit of resolution of human eye (0.1 mm) and why microscopes are needed",
+    "Light microscope vs electron microscope, and Robert Hooke's discovery of the cell (1665)",
+    "Cell membrane / plasma membrane — selectively permeable, fluid-mosaic model (lipid bilayer + proteins)",
+    "Osmosis (movement of water across a selectively permeable membrane) vs diffusion (net movement of particles, higher to lower concentration)",
+    "Isotonic, hypotonic, hypertonic solutions and their effect on cells",
+    "Cell wall (plants, fungi, bacteria) — made of cellulose, provides rigidity, distinct from cell membrane",
+    "Prokaryotic cells (no true nucleus, nucleoid, no membrane-bound organelles) vs Eukaryotic cells (true nucleus, membrane-bound organelles)",
+    "Nucleus, nucleolus, chromatin, chromosomes, DNA and genes",
+    "Ribosomes (protein synthesis), Endoplasmic Reticulum (Rough ER vs Smooth ER), Golgi apparatus (packaging/shipping)",
+    "Lysosomes (cell's clean-up system / digestion of waste)",
+    "Mitochondria — 'powerhouse of the cell', outer/inner membrane, cristae, ATP production via cellular respiration",
+    "Plastids — chloroplasts (photosynthesis, chlorophyll), chromoplasts (pigments/colour), leucoplasts (colourless, food storage)",
+    "Vacuoles — storage and support, cell sap, plant cell turgidity/wilting",
+    "Cell division: Mitosis (2 genetically identical daughter cells) vs Meiosis (4 daughter cells, half chromosome number, occurs in reproductive organs)",
+    "Cell Theory: Schleiden (plants, 1838), Schwann (animals, 1839), Virchow (cells arise from pre-existing cells, 1855)",
+    "Contact inhibition and cancer/tumour formation from uncontrolled cell division",
+    "Programmed Cell Death (PCD)"
+  ],
+
+  "expected_objectives": [
+    "Explain how the cell is the structural and functional unit of life",
+    "Describe how technological tools (microscopes) enabled discovery of cell structure",
+    "Identify and describe the functions of major cell organelles",
+    "Distinguish between prokaryotic and eukaryotic cells, and between plant and animal cells",
+    "Explain the processes of osmosis and diffusion using real-world examples",
+    "Describe how a cell grows, divides (mitosis and meiosis), and eventually dies",
+    "State the Cell Theory and its historical development"
+  ],
+
+  "known_answer_locations": [
+    {
+      "question": "Who first observed a cell and when?",
+      "expected_page": 10,
+      "expected_section": "2.1 How to Study Cells?"
+    },
+    {
+      "question": "What is the fluid-mosaic model of the cell membrane?",
+      "expected_page": 12,
+      "expected_section": "2.2.1 Cell membrane — The universal feature of a cell"
+    },
+    {
+      "question": "Why are mitochondria called the powerhouse of the cell?",
+      "expected_page": 18,
+      "expected_section": "Mitochondria — The powerhouse of the cell"
+    },
+    {
+      "question": "What is mitosis?",
+      "expected_page": 21,
+      "expected_section": "2.4.1 Cell division — Mitosis"
+    },
+    {
+      "question": "What is meiosis and how does it differ from mitosis?",
+      "expected_page": 22,
+      "expected_section": "2.4.1 Cell division — Meiosis"
+    },
+    {
+      "question": "What are the three points of the classical Cell Theory and who developed them?",
+      "expected_page": 23,
+      "expected_section": "2.5 Cell Theory — The Unifying Principle of Biology"
+    }
+  ],
+
+  "candidate_facts_for_tampering": [
+    "Robert Hooke observed a cell in 1665 using a self-designed microscope (~200-300X magnification) — could change the year or the magnification power",
+    "Mitosis produces TWO genetically identical daughter cells; Meiosis produces FOUR daughter cells with HALF the chromosome number — could swap the two/four or omit 'half the chromosome number'",
+    "The limit of resolution of the human eye is 0.1 mm — could change the number",
+    "Cell Theory: Schleiden (plants, 1838), Schwann (animals, 1839), Virchow (pre-existing cells, 1855) — could swap which scientist did which contribution or the dates",
+    "Mitochondria have an outer membrane (smooth) and inner membrane (folded into cristae) — could invert which membrane is smooth vs folded"
+  ],
+
+  "notes_for_human_verification": [
+    "This chapter is unusually dense (18 concepts vs ~12 for the Atmosphere chapter) — consider trimming expected_concepts if you want a lighter-weight comparison row, or keep it as-is since it's a genuinely good test of extraction on a content-heavy STEM chapter.",
+    "Several 'Ready to Go Beyond' and 'Threads of Curiosity' side-boxes contain extra content (viruses/viroids/prions, cytoskeleton, synthetic biology/Craig Venter, cell culture, totipotency) not included in expected_concepts since they're explicitly marked as supplementary/enrichment in the textbook — decide if you want your system's extraction graded on including these or not.",
+    "Page numbers were read from the page footer printed in the PDF (e.g. 'Exploration | Grade 9' pages), not the PDF file's internal page count — double check if your parser extracts these differently."
+  ]
+}

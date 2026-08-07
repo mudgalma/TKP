@@ -36,6 +36,11 @@ venv.bak/
 
 # Project Specific
 storage/
+debug/
+docs/
+mlruns/
+mlflow.db
+*.log
 
 # OS/IDE
 .DS_Store
